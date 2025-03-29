@@ -96,10 +96,6 @@ describe('', () => {
 			const base = 'https://larana.tech'
 			const router = new DefaultRouter({ routes, eventBus: new EventBus(), base })
 
-			test('url', () => {
-
-			})
-
 			describe('object', () => {
 				test('url', () => {
 					expect(
@@ -161,11 +157,16 @@ describe('', () => {
 
 			const router = new DefaultRouter({ routes, eventBus })
 
-			const e = { url: '/url', searchParams: new URLSearchParams([['a', 'b']]) }
+			router.push({ url: '/articles', searchParams: new URLSearchParams([['a', 'b']]) })
 
-			router.push(e)
-
-			expect(spy).toHaveBeenCalledWith(PUSH_EVENT, e)
+			expect(spy).toHaveBeenCalledWith(PUSH_EVENT, {
+				url: '/articles?a=b',
+				path: '/articles',
+				searchParams: new URLSearchParams([['a', 'b']]),
+				params: {},
+				page: 1,
+				name: 'articles',
+			})
 		})
 
 		test('by url', () => {
@@ -178,9 +179,13 @@ describe('', () => {
 
 			const router = new DefaultRouter({ routes, eventBus })
 
-			router.push('/123')
+			const url = '/articles'
 
-			expect(spy).toHaveBeenCalledWith(PUSH_EVENT, '/123')
+			const route = router._resolve(new URL(url, 'https://larana.tech'))
+
+			router.push(url)
+
+			expect(spy).toHaveBeenCalledWith(PUSH_EVENT, route)
 		})
 	})
 })

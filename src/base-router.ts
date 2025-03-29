@@ -15,6 +15,7 @@ export abstract class BaseRouter {
 	history: HistoryItem[] = []
 	fullHistory: HistoryItem[] = []
 	eventBus: EventBus
+	currentRoute: ResolvedRoute | null = null
 
 	constructor({
 		base = 'https://larana.tech',
@@ -29,7 +30,9 @@ export abstract class BaseRouter {
 	}
 
 	resolve(url: string, base?: string): ResolvedRoute {
-		return this._resolve(new URL(url, base || this.base))
+		const route = this._resolve(new URL(url, base || this.base))
+		this.currentRoute = route
+		return route
 	}
 
 	_resolve(url: URL): ResolvedRoute {
