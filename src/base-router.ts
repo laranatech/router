@@ -111,7 +111,7 @@ export abstract class BaseRouter {
 			console.log(historyItem)
 		}
 
-		this.eventBus.dispatch(PUSH_EVENT, value)
+		this.eventBus.dispatch(PUSH_EVENT, route)
 	}
 
 	pushExternal(url: string) {
