@@ -1,0 +1,10 @@
+export const PUSH_EVENT = 'ROUTER_PUSH'
+
+export const RELOAD_EVENT = 'ROUTER_PUSH'
+
+export const PUSH_EXTERNAL_EVENT = 'ROUTER_PUSH_EXTERNAL'
+
+export type ROUTER_EVENT =
+	| typeof PUSH_EVENT
+	| typeof RELOAD_EVENT
+	| typeof PUSH_EXTERNAL_EVENT
