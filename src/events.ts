@@ -1,6 +1,6 @@
 export const PUSH_EVENT = 'ROUTER_PUSH'
 
-export const RELOAD_EVENT = 'ROUTER_PUSH'
+export const RELOAD_EVENT = 'ROUTER_RELOAD'
 
 export const PUSH_EXTERNAL_EVENT = 'ROUTER_PUSH_EXTERNAL'
 
