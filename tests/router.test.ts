@@ -36,6 +36,18 @@ describe("", () => {
 			handler: (req: Req) => req.write("delete"),
 		},
 		{
+			path: "/endpoint",
+			name: "get-endpoint",
+			method: "GET",
+			handler: (req: Req) => req.write("get"),
+		},
+		{
+			path: "/endpoint",
+			name: "post-endpoint",
+			method: "POST",
+			handler: (req: Req) => req.write("post"),
+		},
+		{
 			path: "not-found",
 			name: "not-found",
 			handler: (req: Req) => req.write("404"),
@@ -116,6 +128,22 @@ describe("", () => {
 				path: url,
 				name: "delete-article",
 				params: { id: "123" },
+			})
+		})
+
+		test("one endpoint with two methods", () => {
+			const url = "/endpoint"
+	
+			expect(router.resolve(testReq(url, "GET"))).toMatchObject({
+				path: url,
+				name: "get-endpoint",
+				params: {},
+			})
+
+			expect(router.resolve(testReq(url, "POST"))).toMatchObject({
+				path: url,
+				name: "post-endpoint",
+				params: {},
 			})
 		})
 	})

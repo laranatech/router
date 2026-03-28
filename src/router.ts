@@ -23,7 +23,12 @@ const noopHandler: Handler = (_req: Req) => {
 
 const _resolve = (routes: Route[], path: string, method?: HTTPMethod) => {
 	const url = new URL(path, "https://localhost")
-	let route = routes.find((r) => r.path === url.pathname)
+	let route = routes.find((r) => {
+		if (method !== undefined && method !== r.method) {
+			return false
+		}
+		return r.path === url.pathname
+	})
 
 	const segments = url.pathname
 		.split("/")
