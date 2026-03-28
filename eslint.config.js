@@ -27,7 +27,7 @@ export default [
 			'no-unreachable': 'error',
 			'max-depth': ['error', 4],
 			'max-nested-callbacks': ['error', 2],
-			quotes: ['error', 'single'],
+			quotes: ['error', 'double'],
 			semi: ['error', 'never'],
 			'no-extra-semi': ['error'],
 			'eol-last': ['error', 'always'],

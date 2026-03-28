@@ -1,27 +1,22 @@
-export type Route = {
-	name: string
+export type HTTPMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
+
+export type Req = {
 	path: string
-	page: unknown
+	method?: HTTPMethod
+	data?: unknown
+	write: (result: unknown) => void
 }
 
-export type ResolvedRoute = {
-	url: string
-	name: string
-	page: unknown
+export type Handler = (req: Req) => void
+
+export type Route = {
+	path: string
+	name?: string
+	method?: HTTPMethod
+	handler: Handler
+}
+
+export type ResolvedRoute = Route & {
 	params: unknown
 	searchParams: URLSearchParams
 }
-
-export type HistoryItem = {
-	ts: number
-	route: ResolvedRoute
-}
-
-export type RouterPush = {
-	url?: string
-	name?: string
-	params?: unknown
-	searchParams?: URLSearchParams
-}
-
-export type RouterPushValue = string | RouterPush
