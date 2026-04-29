@@ -7,7 +7,6 @@ const testReq = (url: string, method?: HTTPMethod) => {
 		path: url,
 		method,
 		data: null,
-		write: (result: unknown) => console.log(result)
 	}
 	return req
 }
@@ -17,40 +16,45 @@ describe("", () => {
 		{
 			path: "/",
 			name: "home",
-			handler: (req: Req) => req.write("home"),
+			handler: (res) => res.write("home"),
 		},
 		{
 			path: "/articles",
 			name: "articles",
-			handler: (req: Req) => req.write("articles"),
+			handler: (res) => res.write("articles"),
+		},
+		{
+			path: "/articles/list",
+			name: "articles-list",
+			handler: (res) => res.write("articles-list"),
 		},
 		{
 			path: "/articles/:slug",
 			name: "single-article",
-			handler: (req: Req) => req.write("single-article"),
+			handler: (res) => res.write("single-article"),
 		},
 		{
 			path: "/delete/:id",
 			name: "delete-article",
 			method: "DELETE",
-			handler: (req: Req) => req.write("delete"),
+			handler: (res) => res.write("delete"),
 		},
 		{
 			path: "/endpoint",
 			name: "get-endpoint",
 			method: "GET",
-			handler: (req: Req) => req.write("get"),
+			handler: (res) => res.write("get"),
 		},
 		{
 			path: "/endpoint",
 			name: "post-endpoint",
 			method: "POST",
-			handler: (req: Req) => req.write("post"),
+			handler: (res) => res.write("post"),
 		},
 		{
 			path: "not-found",
 			name: "not-found",
-			handler: (req: Req) => req.write("404"),
+			handler: (res) => res.write("404"),
 		},
 	]
 
@@ -74,6 +78,18 @@ describe("", () => {
 				name: "articles",
 				params: {},
 				searchParams,
+			})
+		})
+
+		test("`/articles/list` vs `/articles/:slug`", () => {
+			const url = "/articles/list"
+			expect(
+				router.resolve(testReq(url))
+			).toMatchObject({
+				path: url,
+				name: "articles-list",
+				params: {},
+				searchParams: {},
 			})
 		})
 	

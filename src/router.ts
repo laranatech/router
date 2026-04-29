@@ -8,7 +8,7 @@ import type {
 
 export type Router = {
 	routes: Route[]
-	resolve: (req: Req) => ResolvedRoute | null
+	resolve: (req: Req) => ResolvedRoute
 }
 
 export type RouterOpts = {
@@ -16,19 +16,31 @@ export type RouterOpts = {
 	routes: Route[]
 }
 
-const noopHandler: Handler = (_req: Req) => {
+const noopHandler: Handler = (_res) => {
 	// eslint-disable-next-line
 	console.error("handler not implemented")
 }
 
 const _resolve = (routes: Route[], path: string, method?: HTTPMethod) => {
 	const url = new URL(path, "https://localhost")
+	const m = method ?? "GET"
 	let route = routes.find((r) => {
-		if (method !== undefined && method !== r.method) {
+		const rm = r.method ?? "GET"
+		if (rm !== m) {
 			return false
 		}
 		return r.path === url.pathname
 	})
+
+	if (route !== undefined && route !== null) {
+		const res: ResolvedRoute = {
+			...route,
+			path: url.pathname + url.search,
+			params: {},
+			searchParams: url.searchParams,
+		}
+		return res
+	}
 
 	const segments = url.pathname
 		.split("/")
@@ -36,7 +48,8 @@ const _resolve = (routes: Route[], path: string, method?: HTTPMethod) => {
 
 	let params = {}
 	routes.some((r) => {
-		if (r.method !== method) {
+		const rm = r.method ?? "GET"
+		if (rm !== m) {
 			return false
 		}
 		const hasParams = r.path.includes(":")
@@ -76,7 +89,7 @@ const _resolve = (routes: Route[], path: string, method?: HTTPMethod) => {
 		}
 	})
 
-	if (!route) {
+	if (route === undefined || route === null) {
 		const notFoundRoute = routes.find((p) => p.name === "not-found")
 		const res: ResolvedRoute = {
 			path: url.pathname + url.search,
@@ -90,7 +103,7 @@ const _resolve = (routes: Route[], path: string, method?: HTTPMethod) => {
 	}
 
 	const res: ResolvedRoute = {
-		...route,
+		...(route as Route),
 		path: url.pathname + url.search,
 		params,
 		searchParams: url.searchParams,

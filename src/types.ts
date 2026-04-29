@@ -4,10 +4,15 @@ export type Req = {
 	path: string
 	method?: HTTPMethod
 	data?: unknown
-	write: (result: unknown) => void
 }
 
-export type Handler = (req: Req) => void
+export type Res = {
+	req: Req
+	route: ResolvedRoute
+	write: (data: unknown) => void
+}
+
+export type Handler = (res: Res) => void
 
 export type Route = {
 	path: string
