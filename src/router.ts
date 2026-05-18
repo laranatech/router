@@ -6,22 +6,17 @@ import type {
 	Route,
 } from "./types"
 
-export type Router = {
-	routes: Route[]
-	resolve: (req: Req) => ResolvedRoute
+export type Router<T> = {
+	routes: Route<T>[]
+	resolve: (req: Req) => ResolvedRoute<T>
 }
 
-export type RouterOpts = {
+export type RouterOpts<T> = {
 	base?: string
-	routes: Route[]
+	routes: Route<T>[]
 }
 
-const noopHandler: Handler = (_res) => {
-	// eslint-disable-next-line
-	console.error("handler not implemented")
-}
-
-const _resolve = (routes: Route[], path: string, method?: HTTPMethod) => {
+const _resolve = <T>(routes: Route<T>[], path: string, method?: HTTPMethod) => {
 	const url = new URL(path, "https://localhost")
 	const m = method ?? "GET"
 	let route = routes.find((r) => {
@@ -33,7 +28,7 @@ const _resolve = (routes: Route[], path: string, method?: HTTPMethod) => {
 	})
 
 	if (route !== undefined && route !== null) {
-		const res: ResolvedRoute = {
+		const res: ResolvedRoute<T> = {
 			...route,
 			path: url.pathname + url.search,
 			params: {},
@@ -89,9 +84,15 @@ const _resolve = (routes: Route[], path: string, method?: HTTPMethod) => {
 		}
 	})
 
+	const noopHandler: Handler<T> = (_res) => {
+		// eslint-disable-next-line
+		console.error("handler not implemented")
+		return null as T
+	}
+
 	if (route === undefined || route === null) {
 		const notFoundRoute = routes.find((p) => p.name === "not-found")
-		const res: ResolvedRoute = {
+		const res: ResolvedRoute<T> = {
 			path: url.pathname + url.search,
 			name: "not-found",
 			handler: notFoundRoute ? notFoundRoute.handler : noopHandler,
@@ -102,8 +103,8 @@ const _resolve = (routes: Route[], path: string, method?: HTTPMethod) => {
 		return res
 	}
 
-	const res: ResolvedRoute = {
-		...(route as Route),
+	const res: ResolvedRoute<T> = {
+		...(route as Route<T>),
 		path: url.pathname + url.search,
 		params,
 		searchParams: url.searchParams,
@@ -112,12 +113,12 @@ const _resolve = (routes: Route[], path: string, method?: HTTPMethod) => {
 	return res
 }
 
-export const createRouter = ({ routes }: RouterOpts) => {
+export const createRouter = <T>({ routes }: RouterOpts<T>) => {
 	const resolve = (req: Req) => {
 		return _resolve(routes, req.path, req.method)
 	}
 
-	const router: Router = {
+	const router: Router<T> = {
 		routes,
 		resolve,
 	}

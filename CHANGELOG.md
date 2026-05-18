@@ -1,3 +1,8 @@
+# 2.2.0
+
+- feat: generic router — now you can set handler result type
+- breaking: `res.write(result)` -> `return result`
+
 # 2.1.0
 
 - fix: `/list` and `/:param` are not separate routes, `list` will be resolved first,

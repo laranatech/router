@@ -9,15 +9,21 @@ type Article = {
 
 const articles = new Map<string, Article>()
 
+type Result = {
+	status: number
+	body?: object
+	text?: string
+}
+
 // Create router with routes
-const router = createRouter({
+const router = createRouter<Result>({
 	routes: [
 		{
 			path: "/articles/:slug",
 			handler: (res) => {
 				const params = res.route.params as { slug: string }
 				const a = articles.get(params.slug)
-				res.write({ status: 200, body: a })
+				return { status: 200, body: a }
 			},
 		},
 		{
@@ -26,14 +32,14 @@ const router = createRouter({
 			handler: (res) => {
 				const data = res.req.data as Article
 				articles.set(data.slug, data)
-				res.write({ status: 200, text: "ok" })
+				return { status: 200, text: "ok" }
 			},
 		},
 		{
 			path: "*",
 			name: "not-found",
-			handler: (res) => {
-				res.write({ status: 404, text: "not found" })
+			handler: (_res) => {
+				return { status: 404, text: "not found" }
 			},
 		},
 	],
@@ -54,14 +60,10 @@ const req: Req = {
 const route = router.resolve(req)
 
 // prepare object to pass to handler
-const makeRes = (req: Req, route: ResolvedRoute) => {
-	const res: Res = {
+const makeRes = <T>(req: Req, route: ResolvedRoute<T>) => {
+	const res: Res<T> = {
 		req,
 		route,
-		write: (data) => {
-			const { status, body, text } = data as { status: number, body?: object, text?: string }
-			console.log(status, body, text)
-		},
 	}
 
 	return res
@@ -70,12 +72,20 @@ const makeRes = (req: Req, route: ResolvedRoute) => {
 // handle route
 route.handler(makeRes(req, route))
 
-
 // new request
 const req2: Req = { path: "/articles/slug-1" }
 
 const route2 = router.resolve(req2)
 
-route2.handler(makeRes(req2, route2))
+const result = route2.handler(makeRes(req2, route2))
 
+const doSomethingWithResult = ({ status, body, text }: Result) => {
+	console.log(status, body, text)
+	// or appRoot.innerHTML = result
+	// or node res.writeHead(result.status)
+	// res.end(JSON.stringify(result.body))
+	// or do anything else
+}
+
+doSomethingWithResult(result)
 

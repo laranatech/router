@@ -6,22 +6,21 @@ export type Req = {
 	data?: unknown
 }
 
-export type Res = {
+export type Res<T> = {
 	req: Req
-	route: ResolvedRoute
-	write: (data: unknown) => void
+	route: ResolvedRoute<T>
 }
 
-export type Handler = (res: Res) => void
+export type Handler<T> = (res: Res<T>) => T
 
-export type Route = {
+export type Route<T> = {
 	path: string
 	name?: string
 	method?: HTTPMethod
-	handler: Handler
+	handler: Handler<T>
 }
 
-export type ResolvedRoute = Route & {
+export type ResolvedRoute<T> = Route<T> & {
 	params: unknown
 	searchParams: URLSearchParams
 }

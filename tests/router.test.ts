@@ -12,49 +12,49 @@ const testReq = (url: string, method?: HTTPMethod) => {
 }
 
 describe("", () => {
-	const routes: Route[] = [
+	const routes: Route<string>[] = [
 		{
 			path: "/",
 			name: "home",
-			handler: (res) => res.write("home"),
+			handler: (_) => "home",
 		},
 		{
 			path: "/articles",
 			name: "articles",
-			handler: (res) => res.write("articles"),
+			handler: (_) => "articles",
 		},
 		{
 			path: "/articles/list",
 			name: "articles-list",
-			handler: (res) => res.write("articles-list"),
+			handler: (_) => "articles-list",
 		},
 		{
 			path: "/articles/:slug",
 			name: "single-article",
-			handler: (res) => res.write("single-article"),
+			handler: (_) => "single-article",
 		},
 		{
 			path: "/delete/:id",
 			name: "delete-article",
 			method: "DELETE",
-			handler: (res) => res.write("delete"),
+			handler: (_) => "delete",
 		},
 		{
 			path: "/endpoint",
 			name: "get-endpoint",
 			method: "GET",
-			handler: (res) => res.write("get"),
+			handler: (_) => "get",
 		},
 		{
 			path: "/endpoint",
 			name: "post-endpoint",
 			method: "POST",
-			handler: (res) => res.write("post"),
+			handler: (_) => "post",
 		},
 		{
 			path: "not-found",
 			name: "not-found",
-			handler: (res) => res.write("404"),
+			handler: (_) => "404",
 		},
 	]
 
